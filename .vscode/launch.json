@@ -1,0 +1,34 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-DespachoApplication<despacho>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.plataforma.educativa.DespachoApplication",
+            "projectName": "despacho",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-InscripcionApplication<despacho>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.plataforma.educativa.InscripcionApplication",
+            "projectName": "despacho",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-InscripcionApplication<inscripcion>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.plataforma.educativa.InscripcionApplication",
+            "projectName": "inscripcion",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
