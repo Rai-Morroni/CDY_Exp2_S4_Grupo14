@@ -1,4 +1,4 @@
-name: CI/CD - Sistema de Guías de Despacho
+name: CI/CD - Sistema de Inscripción de Cursos
 
 on:
   push:
@@ -40,8 +40,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/despacho-service:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/despacho-service:${{ github.sha }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/inscripcion-service:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/inscripcion-service:${{ github.sha }}
 
   # ──────────────────────────────────────────────
   # JOB 2: Despliegue en EC2 con EFS montado
@@ -61,11 +61,11 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             # ── Actualizar imagen desde Docker Hub ──
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/despacho-service:latest
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/inscripcion-service:latest
 
             # ── Detener y eliminar contenedor anterior ──
-            docker stop despacho-service 2>/dev/null || true
-            docker rm   despacho-service 2>/dev/null || true
+            docker stop inscripcion-service 2>/dev/null || true
+            docker rm   inscripcion-service 2>/dev/null || true
 
             # ── Verificar montaje EFS ──
             if ! mountpoint -q /mnt/efs; then
@@ -74,7 +74,7 @@ jobs:
 
             # ── Lanzar nuevo contenedor con EFS montado ──
             docker run -d \
-              --name despacho-service \
+              --name inscripcion-service \
               --restart unless-stopped \
               -p 8080:8080 \
               -v /mnt/efs:/app/efs \
@@ -82,13 +82,10 @@ jobs:
               -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
               -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
               -e AWS_SESSION_TOKEN=${{ secrets.AWS_SESSION_TOKEN }} \
-              ${{ secrets.DOCKERHUB_USERNAME }}/despacho-service:latest
+              ${{ secrets.DOCKERHUB_USERNAME }}/inscripcion-service:latest
 
             # ── Verificar que el contenedor esté corriendo ──
             sleep 10
-            docker ps | grep despacho-service
-
-            # ── Health check ──
-            curl -f http://localhost:8080/api/health || echo "Health check falló"
+            docker ps | grep inscripcion-service
 
             echo "Despliegue completado exitosamente"
